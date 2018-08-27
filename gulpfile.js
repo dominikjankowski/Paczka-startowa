@@ -13,10 +13,10 @@ const browserSync   = require("browser-sync").create();
 const webpack       = require("webpack");
 
 function showError(err) {
-    notifier.notify({
-        title: "Error in sass",
-        message: err.messageFormatted
-      });
+    // notifier.notify({
+    //     title: "Error in sass",
+    //     message: err.messageFormatted
+    //   });
 
     console.log(colors.red("==============================="));
     console.log(colors.red(err.messageFormatted));
@@ -29,15 +29,17 @@ gulp.task("browserSync", function() {
     browserSync.init({
         server: "dist",
         notify: false,
-        //host: "192.168.0.24",
-        //port: 3000,
         open: true,
-        //browser: "google chrome" //https://stackoverflow.com/questions/24686585/gulp-browser-sync-open-chrome-only
+       
     });
 });
 
 gulp.task("html", function(){
     return gulp.src("src/html/**/*.html")
+        .pipe(plumber({
+            errorHandler: showError
+        }))
+        .pipe(htmlMin({collapseWhitespace: true}))
         .pipe(gulp.dest("dist/"))
         .pipe(browserSync.reload({
             stream: true
@@ -78,6 +80,14 @@ gulp.task("es6", function(cb) { //https://github.com/webpack/docs/wiki/usage-wit
 })
 
 
+gulp.task("img", function() {
+    return gulp.src("src/img/*.+(png|jpg|jpeg|gif|svg)")
+    .pipe(gulp.dest("dist/img"))
+    .pipe(browserSync.reload({
+        stream: true
+    }));
+})
+
 gulp.task("watch", function() {
     gulp.watch("src/scss/**/*.scss", ["sass"]);
     gulp.watch("src/js/**/*.js", ["es6"]);
@@ -85,4 +95,4 @@ gulp.task("watch", function() {
 });
 
 
-gulp.task("default", ["html", "sass", "es6", "browserSync", "watch"]);
+gulp.task("default", ["html", "sass", "es6", "img" ,"browserSync", "watch"]);
