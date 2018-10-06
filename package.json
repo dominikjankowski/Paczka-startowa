@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "gulp": "gulp",
+    "minify": "gulp minify",
     "dev": "webpack --mode development",
     "prod": "webpack --mode production"
   },
